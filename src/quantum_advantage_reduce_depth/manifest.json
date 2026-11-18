@@ -1,0 +1,778 @@
+{
+  "repository": "quantum-advantage-tracker/quantum-advantage-tracker.github.io",
+  "revision": "4d27f882d55028162206c4f12b5b6fc6a63868e7",
+  "license": "Apache-2.0",
+  "inventory": [
+    {
+      "circuit_id": "nq70_depth70_checks27_doped",
+      "label": "nq70_depth70_checks27_doped",
+      "family": "Doped random graph state sampling",
+      "git_blob": "8cab98c0d467611b570a173ccb67f481f43eac61",
+      "sha256": "4b70a9c4daef1cfd5dc5e53623879f3ec26a2dd122af80afe7d6c0c531b9c45e",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/doped_random_graph_sampling/nq70_depth70_checks27_doped.qasm",
+          "tracker_id": "doped_random_graph_sampling_nq70_depth70_checks27",
+          "submission_ids": [
+            228,
+            242
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The 70-qubit chain fits both targets without SWAPs."
+    },
+    {
+      "circuit_id": "nq70_depth70_checks27_doped_checks",
+      "label": "Graph state, 27 checks",
+      "family": "Doped random graph state sampling",
+      "git_blob": "e88d2895a1cf436e389a76da991f6d6a7a5df009",
+      "sha256": "b41bebe4630332b34fabf71813c4f85c4f739a05de2022fed3f860d27a5ecb72",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/doped_random_graph_sampling/nq70_depth70_checks27_doped_checks.qasm",
+          "tracker_id": "doped_random_graph_sampling_nq70_depth70_checks27",
+          "submission_ids": [
+            228,
+            242
+          ],
+          "catalog_path": "data/classically-verifiable-problems/circuit-models/doped_random_graph_sampling/nq70_depth70_checks27_doped.qasm",
+          "relationship": "Ancilla and spacetime Pauli check companion to the cataloged circuit.",
+          "documentation": "data/classically-verifiable-problems/circuit-models/doped_random_graph_sampling/README.md"
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Same two-qubit structure as the checked random graph circuit."
+    },
+    {
+      "circuit_id": "p11",
+      "label": "P11 HQAP",
+      "family": "Peaked circuits (HQAP)",
+      "git_blob": "af3cbb2756a73b21fa4ab50a21a1e36466886494",
+      "sha256": "1373d50c8a42b1ca745d202391767c417ddac56db95182ac2aced019231b3372",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/peaked_circuit/peaked_circuit_P11_Hqap_98x1999.qasm",
+          "tracker_id": "peaked_circuit_P11_Hqap_98x1999",
+          "submission_ids": [
+            246
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston",
+        "FakeNighthawk"
+      ]
+    },
+    {
+      "circuit_id": "p12",
+      "label": "P12 HQAP",
+      "family": "Peaked circuits (HQAP)",
+      "git_blob": "12e6adafd699bddd72d268f263d9636347c497d2",
+      "sha256": "868ff86a396f86a8cbca48f7127e49c4c4f951a5a955295e5010a92b76be961d",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/peaked_circuit/peaked_circuit_P12_Hqap_98x2457.qasm",
+          "tracker_id": "peaked_circuit_P12_Hqap_98x2457",
+          "submission_ids": [
+            247
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston",
+        "FakeNighthawk"
+      ]
+    },
+    {
+      "circuit_id": "p9",
+      "label": "P9 HQAP",
+      "family": "Peaked circuits (HQAP)",
+      "git_blob": "f1c03617d443a68a10247dced1baa4db83140fff",
+      "sha256": "f043c6cdf9e1a1ba9b3e68ea3b893277e8acacab80319d6a8524cc022886a3f9",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/peaked_circuit/peaked_circuit_P9_Hqap_56x1917.qasm",
+          "tracker_id": "peaked_circuit_P9_Hqap_56x1917",
+          "submission_ids": [
+            83,
+            84,
+            106,
+            153
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston",
+        "FakeNighthawk"
+      ]
+    },
+    {
+      "circuit_id": "peaked_circuit_heavy_hex_49x4020",
+      "label": "peaked_circuit_heavy_hex_49x4020",
+      "family": "Peaked circuits (HQAP)",
+      "git_blob": "f913fe18fa0bcbd30c2b27aaf4eae5c4d999a481",
+      "sha256": "ef92424a8e365905037e2a610a50ec8cd46b032a0fb01fd12b80d2d8ed0f112f",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/peaked_circuit/peaked_circuit_heavy_hex_49x4020.qasm",
+          "tracker_id": "peaked_circuit_heavy_hex_49x4020",
+          "submission_ids": [
+            27,
+            43,
+            47
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The 49-qubit heavy-hex patch fits both targets without SWAPs."
+    },
+    {
+      "circuit_id": "peaked_circuit_heavy_hex_49x5072",
+      "label": "peaked_circuit_heavy_hex_49x5072",
+      "family": "Peaked circuits (HQAP)",
+      "git_blob": "95b734ed3604ff23f522e2dc98f0f90d9ed3d9b5",
+      "sha256": "a9c2409bad096273b64c722a29cf493f0dd621a80760e87f4b778f0bbb70ddc9",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/peaked_circuit/peaked_circuit_heavy_hex_49x5072.qasm",
+          "tracker_id": "peaked_circuit_heavy_hex_49x5072",
+          "submission_ids": [
+            93,
+            98,
+            105
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The 49-qubit heavy-hex patch fits both targets without SWAPs."
+    },
+    {
+      "circuit_id": "nq70_depth70_checks27_basis_fstate",
+      "label": "Random graph state without checks",
+      "family": "Random graph state sampling",
+      "git_blob": "f974dc02534a875ac2a0ae83f9b5288df8657803",
+      "sha256": "8881167664ca6f75d11104b06bde2d6571c0b1558fdb67b55be69141de7e67d7",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/random_graph_sampling/nq70_depth70_checks27_basis_fstate.qasm",
+          "tracker_id": "random_graph_sampling_nq70_depth70_checks27_basis_fstate",
+          "submission_ids": [
+            151
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The 70-qubit chain fits both targets without SWAPs."
+    },
+    {
+      "circuit_id": "graph-checked",
+      "label": "Graph state, 27 checks",
+      "family": "Random graph state sampling with checks",
+      "git_blob": "7be56c4f7005612a76ba76bb46ae41182bd4639d",
+      "sha256": "8536a0b2ebed68d62aa33a485b23394571f8d693faed6e4a6469af78ef5700ea",
+      "sources": [
+        {
+          "path": "data/classically-verifiable-problems/circuit-models/random_graph_sampling/nq70_depth70_checks27_basis_fstate_checks.qasm",
+          "tracker_id": "random_graph_sampling_nq70_depth70_checks27_basis_fstate",
+          "submission_ids": [
+            151
+          ],
+          "catalog_path": "data/classically-verifiable-problems/circuit-models/random_graph_sampling/nq70_depth70_checks27_basis_fstate.qasm",
+          "relationship": "Ancilla and spacetime Pauli check companion to the cataloged circuit.",
+          "documentation": "data/classically-verifiable-problems/circuit-models/random_graph_sampling/README.md"
+        }
+      ],
+      "expected_targets": [
+        "FakeNighthawk"
+      ]
+    },
+    {
+      "circuit_id": "floquet_mixed_field_ising_mag_51qx16c",
+      "label": "floquet_mixed_field_ising_mag_51qx16c",
+      "family": "Floquet mixed-field Ising",
+      "git_blob": "418ccbbb83b42b7a8881f0a50637af893717c86c",
+      "sha256": "597fd6743a87727e8d59911b68084b0f2241ccd4528d1261a33a1387b5e08851",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/floquet_mixed_field_ising/floquet_mixed_field_ising_mag_51qx16c.qasm",
+          "tracker_id": "floquet_mixed_field_ising_mag_51qx16c",
+          "submission_ids": []
+        },
+        {
+          "path": "data/observable-estimations/circuit-models/floquet_mixed_field_ising/floquet_mixed_field_ising_zzd2_51qx16c.qasm",
+          "tracker_id": "floquet_mixed_field_ising_zzd2_51qx16c",
+          "submission_ids": []
+        },
+        {
+          "path": "data/observable-estimations/circuit-models/floquet_mixed_field_ising/floquet_mixed_field_ising_zzd3_51qx16c.qasm",
+          "tracker_id": "floquet_mixed_field_ising_zzd3_51qx16c",
+          "submission_ids": [
+            171,
+            173
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The heavy-hex patch fits both targets without SWAPs."
+    },
+    {
+      "circuit_id": "floquet_mixed_field_ising_mag_51qx30c",
+      "label": "floquet_mixed_field_ising_mag_51qx30c",
+      "family": "Floquet mixed-field Ising",
+      "git_blob": "ce46b095f7903b47c46617ca848dd93aa6eb2be8",
+      "sha256": "95cae8673d5781dcb2d9035fcd5bd9a65ae042efab72237247469605242ec717",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/floquet_mixed_field_ising/floquet_mixed_field_ising_mag_51qx30c.qasm",
+          "tracker_id": "floquet_mixed_field_ising_mag_51qx30c",
+          "submission_ids": []
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The heavy-hex patch fits both targets without SWAPs."
+    },
+    {
+      "circuit_id": "floquet_mixed_field_ising_mag_74qx27c",
+      "label": "floquet_mixed_field_ising_mag_74qx27c",
+      "family": "Floquet mixed-field Ising",
+      "git_blob": "4d2ad6a4c6903cb07029393ea970fb2896f9347c",
+      "sha256": "f5a00771e834af9ef7b9bb9269217109ffaa31bfb7ec250d409b6278f6e84a91",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/floquet_mixed_field_ising/floquet_mixed_field_ising_mag_74qx27c.qasm",
+          "tracker_id": "floquet_mixed_field_ising_mag_74qx27c",
+          "submission_ids": []
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The heavy-hex patch fits both targets without SWAPs."
+    },
+    {
+      "circuit_id": "49Q_OLE_circuit_L_3_b_0.25_delta0.15",
+      "label": "49Q_OLE_circuit_L_3_b_0.25_delta0.15",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "716305eb99ed9fafb356bf971269ff1d8d66b03e",
+      "sha256": "4aae5089337253921cd70df470dc52b5243e0c8410b36a6bcbb43497db48db29",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/49Q_OLE_circuit_L_3_b_0.25_delta0.15.qasm",
+          "tracker_id": "operator_loschmidt_echo_49x648",
+          "submission_ids": [
+            15,
+            18,
+            38,
+            63
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "49Q_OLE_circuit_L_6_b_0.25_delta0.15",
+      "label": "49Q_OLE_circuit_L_6_b_0.25_delta0.15",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "829be362d1526ea9afe8e13fe1594e2e00eaa2e2",
+      "sha256": "3748e2c026c118f9d6c7499093ea43e41a45251b6bf8d3adb6fb056f718f6cc0",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/49Q_OLE_circuit_L_6_b_0.25_delta0.15.qasm",
+          "tracker_id": "operator_loschmidt_echo_49x1296",
+          "submission_ids": [
+            19,
+            20,
+            37,
+            64,
+            77,
+            78
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "70Q_OLE_circuit_L_6_b_0.25_delta0.15",
+      "label": "70Q_OLE_circuit_L_6_b_0.25_delta0.15",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "867e332c63cbc685e20e4643d22b61ad4519e07b",
+      "sha256": "7bb359cd6a6270856819780f410336ecefe52f082cd14af2d95539a681bf9843",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/70Q_OLE_circuit_L_6_b_0.25_delta0.15.qasm",
+          "tracker_id": "operator_loschmidt_echo_70x1872",
+          "submission_ids": [
+            21,
+            22,
+            36,
+            65
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "operator_loschmidt_echo_56x1488_alpha_0.00",
+      "label": "operator_loschmidt_echo_56x1488_alpha_0.00",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "9bd417e7ef800430687edc26ad7b8ce2ea683cdc",
+      "sha256": "a3b681258aa1b273805593d3894efdfc9f161545afe72061e5c7004111b6b095",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.00.qasm",
+          "tracker_id": "operator_loschmidt_echo_56x1488",
+          "submission_ids": [],
+          "catalog_path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.15.qasm",
+          "relationship": "Scattering-potential variant of the cataloged circuit.",
+          "documentation": "data/observable-estimations/circuit-models/operator_loschmidt_echo/README.md"
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "operator_loschmidt_echo_56x1488_alpha_0.05",
+      "label": "operator_loschmidt_echo_56x1488_alpha_0.05",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "f96867af974313a7b91ea7430c0bf5a4b029892c",
+      "sha256": "ef4670601d8fa666500e782ef2ba4993bfb1c37e57ad31abb8dc04a346aa5081",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.05.qasm",
+          "tracker_id": "operator_loschmidt_echo_56x1488",
+          "submission_ids": [],
+          "catalog_path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.15.qasm",
+          "relationship": "Scattering-potential variant of the cataloged circuit.",
+          "documentation": "data/observable-estimations/circuit-models/operator_loschmidt_echo/README.md"
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "operator_loschmidt_echo_56x1488_alpha_0.10",
+      "label": "operator_loschmidt_echo_56x1488_alpha_0.10",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "0f6ede0606fafb67ac22d779a6d9f6df1e373c86",
+      "sha256": "d6a6cbb370e480ceebbf5bfd33c717d0534dbcfc0c17a6100077edb3a0d13875",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.10.qasm",
+          "tracker_id": "operator_loschmidt_echo_56x1488",
+          "submission_ids": [],
+          "catalog_path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.15.qasm",
+          "relationship": "Scattering-potential variant of the cataloged circuit.",
+          "documentation": "data/observable-estimations/circuit-models/operator_loschmidt_echo/README.md"
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "operator_loschmidt_echo_56x1488_alpha_0.15",
+      "label": "operator_loschmidt_echo_56x1488_alpha_0.15",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "6b75c68d66f9442be87f5abd7e16b7d1fb451313",
+      "sha256": "c1cfea82c0aa0d64c5f45fe3803847d1f8a53d6f84189979d785e1e4be16ed60",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.15.qasm",
+          "tracker_id": "operator_loschmidt_echo_56x1488",
+          "submission_ids": []
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "operator_loschmidt_echo_56x1488_alpha_0.20",
+      "label": "operator_loschmidt_echo_56x1488_alpha_0.20",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "9a3ea68e3a48975c87971b6c14ca7a80eac966da",
+      "sha256": "ff7ed5cfbc0e2967411ed83a95459ae76a0c9155fe25a29c710984f319b51b54",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.20.qasm",
+          "tracker_id": "operator_loschmidt_echo_56x1488",
+          "submission_ids": [],
+          "catalog_path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.15.qasm",
+          "relationship": "Scattering-potential variant of the cataloged circuit.",
+          "documentation": "data/observable-estimations/circuit-models/operator_loschmidt_echo/README.md"
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "operator_loschmidt_echo_56x1488_alpha_0.25",
+      "label": "operator_loschmidt_echo_56x1488_alpha_0.25",
+      "family": "Operator Loschmidt echo",
+      "git_blob": "d8a1380ec9dfe046aaaa5e6147f7dc42bdb15935",
+      "sha256": "1bc751aef20c2976785bf3a23e89055b72793eb4a7a573777570a3a23065397c",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.25.qasm",
+          "tracker_id": "operator_loschmidt_echo_56x1488",
+          "submission_ids": [],
+          "catalog_path": "data/observable-estimations/circuit-models/operator_loschmidt_echo/operator_loschmidt_echo_56x1488_alpha_0.15.qasm",
+          "relationship": "Scattering-potential variant of the cataloged circuit.",
+          "documentation": "data/observable-estimations/circuit-models/operator_loschmidt_echo/README.md"
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Active heavy-hex patch fits both targets. The files declare 156 wires, more than Nighthawk."
+    },
+    {
+      "circuit_id": "x_100_SCV",
+      "label": "x_100_SCV",
+      "family": "SU(2) hadron dynamics",
+      "git_blob": "291f2c2171f5d8a628bb1da3e38308bf4fa3f9c0",
+      "sha256": "af269dd7aeacfe6c9fef00bdab3bd1d0a641f5ee99be67c56ebf73a15791b6da",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/su2_hadron_dynamics_lsh/x_100_SCV.qasm",
+          "tracker_id": "su2_hadron_dynamics_lsh_x_100_SCV",
+          "submission_ids": []
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The 120-qubit chain fits both targets and contains explicit SWAP gates."
+    },
+    {
+      "circuit_id": "x_100_meson",
+      "label": "x_100_meson",
+      "family": "SU(2) hadron dynamics",
+      "git_blob": "5960b3680d51ba79087636de5ffe52bb76d40c29",
+      "sha256": "28b3d82a2572dac60110c94a0f58a945a117d414e94446866e0d87cc5121b4f9",
+      "sources": [
+        {
+          "path": "data/observable-estimations/circuit-models/su2_hadron_dynamics_lsh/x_100_meson.qasm",
+          "tracker_id": "su2_hadron_dynamics_lsh_x_100_meson",
+          "submission_ids": [
+            149,
+            202,
+            227,
+            250
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The 120-qubit chain fits both targets and contains explicit SWAP gates."
+    },
+    {
+      "circuit_id": "4Fe_4S_RIKEN_GB_last_not_transpiled",
+      "label": "4Fe_4S_RIKEN_GB_last_not_transpiled",
+      "family": "4Fe–4S",
+      "git_blob": "ec55c76dffc428eb6d8b9e88b147698d9aa500cf",
+      "sha256": "a6477bb28f1dd050b29eb4d6df756d32af6519954a1328918e21c337e25b851e",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/4fe_4s/submission-circuits/submission-8/4Fe_4S_RIKEN_GB_last_not_transpiled.qasm",
+          "tracker_id": "4fe_4s_54e_36o",
+          "submission_ids": [
+            8
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "The pinned QASM 3 importer cannot parse the empty zero-qubit global_phase(p0) gate and its invocation."
+    },
+    {
+      "circuit_id": "anderson-zero",
+      "label": "NOs_1, 0 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "50e3d84e8452f1ab263a14cef1a87f02f60e8362",
+      "sha256": "6e81b228a61395b8b48bde2f263c7f1c8089c3e44ba27ff1a9c0df94eaab9d76",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter-0_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        },
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter_double_angles-0_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        },
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-0_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Fourteen two-qubit gates fit both targets without SWAPs."
+    },
+    {
+      "circuit_id": "anderson-nos_1-1",
+      "label": "NOs_1, 1 step",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "099a924d54ed64e6398248d37f5c8d4a8cf366a7",
+      "sha256": "37778df038f93a652568957612aaeb3d94493b0d81492a038cbfd1d1f840733d",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter-1_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-nos_1-2",
+      "label": "NOs_1, 2 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "bec2359c5163b5e0511d76474bcc4b724f44ed33",
+      "sha256": "31ce9be05aa9234109576c8bf5ed9973554ea603ed7398742ff9924fe3bbc124",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter-2_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-nos_1-3",
+      "label": "NOs_1, 3 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "daa46bc68b683d5b35f1a5fc6112f1f7b3fffb0f",
+      "sha256": "670a750fc827518ff5d1b526a031ab155c030f8146716f6274f046aef3572a12",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter-3_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-double-1",
+      "label": "NOs_1, 1 step",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "17219f9c872a2c4be483522a225ab15d9aa80ada",
+      "sha256": "b06b3270502d68f2960f63c5dff7f4069bf8d7c95ffdde6b28e0e70dd903470f",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter_double_angles-1_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Same two-qubit structure as anderson-nos_1-1."
+    },
+    {
+      "circuit_id": "anderson-double-2",
+      "label": "NOs_1, 2 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "e80671313c58ad7e6f9d8fca2d6e6fc67e6e1770",
+      "sha256": "1a3bb4c0b3d0019b04cacebd29182e2bb3556bca9fb0cf602afdeaabc40c3848",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter_double_angles-2_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Same two-qubit structure as anderson-nos_1-2."
+    },
+    {
+      "circuit_id": "anderson-double-3",
+      "label": "NOs_1, 3 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "6197ab2a87db9b26b533bc26691aafe4f6f13da9",
+      "sha256": "a2551bf6aa3e2ebc65d6fb1e7e2c4a3661225f0e320e872b238ec892e3bad3fa",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_NOs_1_hyb_amplitude-0.16/circuit_trotter_double_angles-3_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [],
+      "exclusion": "Same two-qubit structure as anderson-nos_1-3."
+    },
+    {
+      "circuit_id": "anderson-momentum-1",
+      "label": "Momentum, 1 step",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "d8420ea1e4b04ae420efa9b23ed67bbdeaa4dea0",
+      "sha256": "7920f1a044b194164b4062ff8980d9d72bd0ac4a12a19672842ae5df984a9625",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-1_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-momentum-2",
+      "label": "Momentum, 2 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "a880d7de971626ebd8f35442d97fe5d5a437035e",
+      "sha256": "236c994d649dcf41af74c43806ad92317c5119d48441ceb70236ad5acfcbed56",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-2_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-momentum-3",
+      "label": "Momentum, 3 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "e80744c0e320f9799d501d14f6f8d1b5dbd4848f",
+      "sha256": "4bcba6acf4b6e1d97a69285dfb6dde7dd1fca765508e4a9ef552e315a15c6685",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-3_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-momentum-4",
+      "label": "Momentum, 4 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "90bb77a1b928abbda301adf4922c07d18a56ad21",
+      "sha256": "6593e410a50ed4d305720a6a4b59b76991877592529c4e0e2375111098c7e51b",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-4_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-momentum-5",
+      "label": "Momentum, 5 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "d25196c4bb63af91958036b4ccb44649488294cb",
+      "sha256": "6730d409f3c3426dc380dd0fc440873144477637e6908853de76e5a18ea0fdf6",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-5_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-momentum-6",
+      "label": "Momentum, 6 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "d81e990dcc00775e5087bf2317cedf72e98492f6",
+      "sha256": "70c766e945d690d2a620c69594a3083b6ec75f6458954095c1f5f40d48092f0a",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-6_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-momentum-7",
+      "label": "Momentum, 7 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "3f2f464bf3a02726c4aba9531b24f34195b7d33b",
+      "sha256": "cfa129f15ceb86e039d9f2b5591aa80f9d986c64c72833fc8594d8c19ff65334",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-7_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    },
+    {
+      "circuit_id": "anderson-momentum-8",
+      "label": "Momentum, 8 steps",
+      "family": "Anderson impurity (SKQD)",
+      "git_blob": "f013455dfee45a9fe4b136b6c724aa663d7c1650",
+      "sha256": "c2bc1bb058ec6a9976e25f2d4e873ec15ffeadfb5476aeffca0a6e13839fc2c2",
+      "sources": [
+        {
+          "path": "data/variational-problems/hamiltonians/anderson_impurity_model/submission-circuits/submission-5/trotter_circuits_trotter_circuits_MOMENTUM_nbath28_n_impurity-4_U-10_hyb_amplitude-0.16/circuit_trotter-8_U-10_approximate_free-fermion_compilation.qasm",
+          "tracker_id": "anderson_impurity_model_4i_28b_32e",
+          "submission_ids": [
+            5
+          ]
+        }
+      ],
+      "expected_targets": [
+        "FakeBoston"
+      ]
+    }
+  ]
+}

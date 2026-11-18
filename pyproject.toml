@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantum-advantage-reduce-depth"
+version = "0.1.0"
+description = "Paired, equal-budget SABRE routing on Quantum Advantage Tracker circuits"
+requires-python = ">=3.12"
+dependencies = [
+  "qiskit @ git+https://github.com/AI-native-Systems-Research/qiskit-evolved.git@9dedcf6f64a66344cb31364e846f71d020adcf9d",
+  "qiskit-ibm-runtime==0.52.1",
+  "qiskit-qasm3-import==0.6.0",
+  "sympy==1.14.0",
+  "matplotlib==3.10.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2"]
+
+[project.scripts]
+quantum-advantage-reduce-depth = "quantum_advantage_reduce_depth.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+quantum_advantage_reduce_depth = ["*.json", "tracker-LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
