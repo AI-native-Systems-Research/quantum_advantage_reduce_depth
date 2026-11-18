@@ -62,10 +62,17 @@ def create_plan(output):
     compiler.configure_threads()
     prepared = read_json(output / "prepared.json")
     plan_file = output / "plan.json"
+    runtime = compiler.runtime_metadata()
+    # The snapshots and stock references come from preparation. They describe the
+    # trials only if both steps ran in the same installation.
+    for field in ("python", "packages", "qiskit_revision"):
+        if prepared["runtime"][field] != runtime[field]:
+            raise ValueError(f"Preparation used different {field} than this environment. "
+                             "Prepare a new output directory here.")
     fingerprint = {
         "prepared_sha256": sha256(output / "prepared.json"),
         "compiler_sha256": sha256(Path(compiler.__file__)),
-        "runtime": compiler.runtime_metadata(),
+        "runtime": runtime,
     }
     cases = prepared["cases"]
     if len(cases) != 18 or len({case["case_id"] for case in cases}) != 18 or (

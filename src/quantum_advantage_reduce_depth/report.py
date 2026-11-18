@@ -7,7 +7,7 @@ import math
 import os
 from collections import defaultdict
 from pathlib import Path
-from statistics import geometric_mean, median
+from statistics import fmean, geometric_mean, median
 from tempfile import TemporaryDirectory
 
 from .storage import atomic_write, write_json
@@ -23,6 +23,8 @@ CASE_FIELDS = (
     "d2_reduction_pct", "n2_ratio", "n2_change", "n2_change_pct", "pairs",
     "paired_median_pct", "paired_q1_pct", "paired_q3_pct", "paired_iqr_pct",
     "seed_wins", "seed_ties", "seed_losses",
+    "decay_d2_mean", "weighted_d2_mean", "d2_mean_ratio",
+    "decay_n2_mean", "weighted_n2_mean", "n2_mean_ratio",
 )
 SUMMARY_FIELDS = (
     "scope", "target", "family", "complete", "cases_complete", "cases_expected",
@@ -32,6 +34,7 @@ SUMMARY_FIELDS = (
     "seed_ties", "seed_losses", "median_paired_median_pct", "decay_seconds",
     "weighted_seconds", "decay_failed_seconds", "weighted_failed_seconds",
     "decay_failed_attempts", "weighted_failed_attempts", "decay_untimed_failures", "weighted_untimed_failures",
+    "d2_mean_ratio_gmean", "n2_mean_ratio_gmean",
 )
 PAIR_FIELDS = (
     "case_id", "target", "family", "circuit_id", "seed", "decay_d2", "weighted_d2",
@@ -97,6 +100,11 @@ def _case(case, rows, seeds, verified):
     record["n2_change"] = weighted["n2"] - decay["n2"]
     record["n2_change_pct"] = 100 * record["n2_change"] / decay["n2"]
 
+    for metric in ("d2", "n2"):
+        for arm in ARMS:
+            record[f"{arm}_{metric}_mean"] = fmean(trials[arm][seed][metric] for seed in seeds)
+        record[f"{metric}_mean_ratio"] = record[f"weighted_{metric}_mean"] / record[f"decay_{metric}_mean"]
+
     pairs = []
     search = []
     for seed in sorted(seeds):
@@ -137,6 +145,7 @@ def _summary(cases, *, scope, family=None, target=None):
         gm = geometric_mean(c[f"{metric}_ratio"] for c in cases)
         result[f"{metric}_ratio_gmean"] = gm
         result[f"{metric}_reduction_pct"] = 100 * (1 - gm)
+        result[f"{metric}_mean_ratio_gmean"] = geometric_mean(c[f"{metric}_mean_ratio"] for c in cases)
     result["d2_reduction_median_pct"] = median(reductions)
     if len(cases) > 1:
         result["d2_reduction_min_pct"] = min(reductions)
@@ -266,6 +275,21 @@ def _markdown(results, figures, plan):
                         f"[{c['winner_arm']}]({c['artifacts']['overall']})"]
     lines += [_table(["Target", "Circuit", "Decay seed", "D2", "N2", "Weighted seed",
                       "D2", "N2", "D2 reduction", "N2 change", "Winner"], map(winner_row, cases)),
+              "## Mean D2 and N2 across seeds",
+              "For each circuit and target, divide the weighted arm’s arithmetic mean over the shared "
+              "seeds by the decay arm’s arithmetic mean. A ratio below 1 means the weighted arm "
+              "has lower mean depth (D2) or uses fewer CZ gates on average (N2).",
+              _table(["Target", "Circuit", "Decay mean D2", "Weighted mean D2", "D2 ratio",
+                      "Decay mean N2", "Weighted mean N2", "N2 ratio"],
+                     ([c["target"], c["label"]] +
+                      ([f"{c['decay_d2_mean']:,.2f}", f"{c['weighted_d2_mean']:,.2f}", f"{c['d2_mean_ratio']:.4f}",
+                        f"{c['decay_n2_mean']:,.2f}", f"{c['weighted_n2_mean']:,.2f}", f"{c['n2_mean_ratio']:.4f}"]
+                       if c["complete"] else ["—"] * 6) for c in cases)),
+              "Each group ratio is the geometric mean of its case ratios, with equal weight per case.",
+              _table(["Group", "Verified cases", "D2 mean ratio", "N2 mean ratio"],
+                     ([_summary_name(s), f"{s['cases_complete']}/{s['cases_expected']}"] +
+                      ([f"{s['d2_mean_ratio_gmean']:.4f}", f"{s['n2_mean_ratio_gmean']:.4f}"]
+                       if s["complete"] else ["—"] * 2) for s in summaries)),
               "## Seed pairing and compile cost",
               "Each pair shares its outer seed. Quartiles use linear interpolation. "
               "IQR bounds and width describe the distribution of paired D2 reductions. "

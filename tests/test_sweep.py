@@ -32,6 +32,20 @@ def study(tmp_path):
     return plan, case
 
 
+def test_plan_requires_preparation_from_the_same_environment(tmp_path):
+    compiler.configure_threads()
+    runtime = compiler.runtime_metadata()
+    cases = [{"case_id": f"case-{i}", "target": "FakeBoston" if i < 14 else "FakeNighthawk"}
+             for i in range(18)]
+    other = {**runtime, "packages": {**runtime["packages"], "numpy": "0"}}
+    write_json(tmp_path / "prepared.json", {"cases": cases, "runtime": other})
+    with pytest.raises(ValueError, match="different packages"):
+        sweep.create_plan(tmp_path)
+    assert not (tmp_path / "plan.json").exists()
+    write_json(tmp_path / "prepared.json", {"cases": cases, "runtime": runtime})
+    assert len(sweep.create_plan(tmp_path)["tasks"]) == 1800
+
+
 @pytest.mark.parametrize("mismatch", ["compiler", "packages", "target"])
 def test_worker_provenance_fails_before_compile(tmp_path, study, mismatch):
     plan, case = study

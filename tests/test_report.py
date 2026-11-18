@@ -62,6 +62,20 @@ class ReportTests(unittest.TestCase):
         self.assertNotIn("d2_reduction_min_pct", graph)
         self.assertEqual(graph["d2_reduction_median_pct"], -100)
 
+    def test_ratios_of_seed_means(self):
+        results, _, _ = analyze(*study())
+        case = next(c for c in results["cases"] if c["case_id"] == "a")
+        self.assertAlmostEqual(case["decay_d2_mean"], 32 / 3)
+        self.assertAlmostEqual(case["weighted_d2_mean"], 30 / 3)
+        self.assertAlmostEqual(case["decay_n2_mean"], 320 / 3)
+        self.assertAlmostEqual(case["weighted_n2_mean"], 315 / 3)
+        self.assertAlmostEqual(case["d2_mean_ratio"], 30 / 32)
+        self.assertAlmostEqual(case["n2_mean_ratio"], 315 / 320)
+
+        overall = results["summaries"][0]
+        self.assertAlmostEqual(overall["d2_mean_ratio_gmean"], (30 / 32 * 64 / 63 * 30 / 15) ** (1 / 3))
+        self.assertAlmostEqual(overall["n2_mean_ratio_gmean"], (315 / 320 * 133 / 147 * 51 / 54) ** (1 / 3))
+
     def test_incomplete_case_suppresses_overlapping_groups(self):
         plan, rows, verified = study()
         verified["b"] = dict(complete=False, issues=["duplicate weighted trial"], artifacts={})
@@ -71,6 +85,10 @@ class ReportTests(unittest.TestCase):
         incomplete = next(c for c in results["cases"] if c["case_id"] == "b")
         self.assertEqual(incomplete["decay_ok"], 3)
         self.assertNotIn("winner_arm", incomplete)
+        for metric in ("d2", "n2"):
+            self.assertNotIn(f"{metric}_mean_ratio", incomplete)
+            for arm in ("decay", "weighted"):
+                self.assertNotIn(f"{arm}_{metric}_mean", incomplete)
         self.assertFalse(any(p["case_id"] == "b" for p in pairs + history))
         for s in results["summaries"]:
             partial = (s["scope"] == "all" or
@@ -78,6 +96,8 @@ class ReportTests(unittest.TestCase):
                        (s["family"] == "Peaked" and s["target"] != "FakeBoston"))
             self.assertEqual(s["complete"], not partial)
             self.assertEqual("d2_reduction_pct" in s, not partial)
+            self.assertEqual("d2_mean_ratio_gmean" in s, not partial)
+            self.assertEqual("n2_mean_ratio_gmean" in s, not partial)
 
     def test_successful_retry_preserves_seed_and_includes_failed_cost(self):
         plan, rows, verified = study()
@@ -110,6 +130,14 @@ class ReportTests(unittest.TestCase):
                 self.assertEqual(f.read_bytes()[:8], b"\x89PNG\r\n\x1a\n")
             with (path / "tables" / "seed_pairs.csv").open() as f:
                 self.assertEqual(len(list(csv.DictReader(f))), 9)
+            with (path / "tables" / "cases.csv").open() as f:
+                case = next(c for c in csv.DictReader(f) if c["case_id"] == "a")
+                self.assertAlmostEqual(float(case["d2_mean_ratio"]), 30 / 32)
+                self.assertAlmostEqual(float(case["n2_mean_ratio"]), 315 / 320)
+            with (path / "tables" / "summaries.csv").open() as f:
+                boston = next(s for s in csv.DictReader(f) if s["scope"] == "target" and s["target"] == "FakeBoston")
+                self.assertAlmostEqual(float(boston["d2_mean_ratio_gmean"]), 30 / 32)
+                self.assertAlmostEqual(float(boston["n2_mean_ratio_gmean"]), 315 / 320)
             previous = (path / "tables" / "cases.csv").read_bytes()
             rows[0]["seconds"] += 11
             with patch("quantum_advantage_reduce_depth.figures.write_figures",
