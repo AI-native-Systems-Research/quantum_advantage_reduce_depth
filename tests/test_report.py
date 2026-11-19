@@ -1,6 +1,7 @@
 import csv
 import json
 import math
+from pathlib import Path
 
 import pytest
 
@@ -57,3 +58,15 @@ def test_family_publication_and_incomplete_rerun(tmp_path):
     assert report == (tmp_path / "report.md").read_text()
     assert "| Graph checks | 1/1 | 2.0000 | -100.00% | 0.9444 | +5.56% |" in report
     assert "| Peaked | 1/2 | — | — | — | — |" in report
+
+
+def test_published_snapshot_exclusions_match_readme(tmp_path):
+    plan, rows, verified = study()
+    plan["revision"] = "4d27f882d55028162206c4f12b5b6fc6a63868e7"
+    write_report(tmp_path, plan, rows, verified)
+    heading = "## Why other circuits were excluded"
+    report = (tmp_path / "README.md").read_text()
+    exclusions = report[report.index(heading):].strip()
+    project_readme = (Path(__file__).resolve().parents[1] / "README.md").read_text()
+    assert "| Operator Loschmidt echo | 9 |" in exclusions
+    assert exclusions in project_readme

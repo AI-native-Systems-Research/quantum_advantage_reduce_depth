@@ -24,7 +24,7 @@ quantum-advantage-reduce-depth = "quantum_advantage_reduce_depth.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-quantum_advantage_reduce_depth = ["*.json", "tracker-LICENSE"]
+quantum_advantage_reduce_depth = ["*.json", "exclusions.md", "tracker-LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

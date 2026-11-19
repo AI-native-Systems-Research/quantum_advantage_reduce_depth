@@ -10,6 +10,21 @@ from tempfile import TemporaryDirectory
 from .storage import write_json
 
 FAMILY_FIELDS = ("family", "cases_complete", "cases_expected", "d2_mean_ratio_gmean", "n2_mean_ratio_gmean")
+TRACKERS = "https://quantum-advantage-tracker.github.io/trackers"
+VERIFIABLE = f"{TRACKERS}/classically-verifiable-problems"
+TRACKER_ENTRIES = {
+    "Peaked circuits (HQAP)": (
+        ("P9 tracker entry", f"{VERIFIABLE}?category=superseded&instance=peaked_circuit_P9_Hqap_56x1917"),
+        ("P11 tracker entry", f"{VERIFIABLE}?instance=peaked_circuit_P11_Hqap_98x1999"),
+        ("P12 tracker entry", f"{VERIFIABLE}?instance=peaked_circuit_P12_Hqap_98x2457"),
+    ),
+    "Anderson impurity (SKQD)": (
+        ("Four-impurity tracker entry", f"{TRACKERS}/variational-problems?category=baseline&instance=anderson_impurity_model_4i_28b_32e"),
+    ),
+    "Random graph state sampling with checks": (
+        ("Random graph sampling tracker entry", f"{VERIFIABLE}?instance=random_graph_sampling_nq70_depth70_checks27_basis_fstate"),
+    ),
+}
 
 
 def analyze(plan, rows, verified_cases):
@@ -41,14 +56,9 @@ def analyze(plan, rows, verified_cases):
     return dict(run_id=plan["run_id"], complete=complete, families=families)
 
 
-def _markdown(families, seed_count):
+def _markdown(families, plan):
     lines = [
         "# Mean two-qubit depth and gate count by circuit family",
-        "",
-        f"For each circuit–target pair, take the arithmetic mean over {seed_count} seeds for each heuristic "
-        "and divide the wait-time mean by the decay mean. Each family ratio is the geometric mean of its "
-        "circuit–target ratios, with equal weight per pair. Percentage improvement is 100 × (1 − ratio). "
-        "Positive values mean lower depth or fewer CZ gates with wait time.",
         "",
         "| Circuit family | Verified cases | Two-qubit depth (D2) ratio | D2 improvement | CZ count (N2) ratio | N2 improvement |",
         "| --- | ---: | ---: | ---: | ---: | ---: |",
@@ -61,7 +71,29 @@ def _markdown(families, seed_count):
             ratio = record.get(key)
             cells.extend(("—", "—") if ratio is None else (f"{ratio:.4f}", f"{1 - ratio:+.2%}"))
         lines.append("| " + " | ".join(cells) + " |")
-    lines.extend(["", "[Full-precision family ratios (CSV)](families.csv) · [Results (JSON)](results.json)"])
+    lines.extend([
+        "", "[Full-precision family ratios (CSV)](families.csv) · [Results (JSON)](results.json)",
+        "", "## How the ratios are calculated", "",
+        f"1. For each circuit–target pair, average D2 over the {len(plan['seeds'])} seeds separately for wait "
+        "time and decay. Divide the wait-time mean by the decay mean. Repeat for N2.",
+        "2. Multiply the case ratios within each family and take the nth root, where n is the number of "
+        "circuit–target pairs. This geometric mean gives each pair equal weight.",
+        "3. Percentage improvement is `100 × (1 − family ratio)`. Positive means lower depth or fewer CZ "
+        "gates with wait time. Calculate with full precision and round for display.",
+        "", "For example, two cases with ratios 0.80 and 0.90 would give a family ratio of "
+        "`√(0.80 × 0.90) ≈ 0.8485`, a 15.15% improvement.",
+    ])
+    sources = []
+    for record in families:
+        family = record["family"]
+        if family in TRACKER_ENTRIES:
+            links = " · ".join(f"[{label}]({url})" for label, url in TRACKER_ENTRIES[family])
+            sources.append(f"- **{family}.** {links}")
+    if sources:
+        lines.extend(["", "## Tracker entries", "", *sources])
+    # The exclusions describe the circuit files in this particular tracker snapshot.
+    if plan.get("revision") == "4d27f882d55028162206c4f12b5b6fc6a63868e7":
+        lines.extend(["", Path(__file__).with_name("exclusions.md").read_text(encoding="utf-8").rstrip()])
     return "\n".join(lines) + "\n"
 
 
@@ -77,7 +109,7 @@ def write_report(output, plan, rows, verified_cases):
             writer.writeheader()
             writer.writerows(results["families"])
         write_json(stage / "results.json", results)
-        markdown = _markdown(results["families"], len(plan["seeds"]))
+        markdown = _markdown(results["families"], plan)
         for name in ("README.md", "report.md"):
             (stage / name).write_text(markdown, encoding="utf-8")
         for name in ("families.csv", "results.json", "report.md", "README.md"):
