@@ -16,9 +16,8 @@ def parse_args(argv=None):
     descriptions = {
         "prepare": "Verify tracker inputs, create snapshots and screen both devices",
         "run": "Run or resume the 108-trial pilot and the full paired matrix",
-        "collect": "Verify completed cases and rebuild the reports and figures",
+        "collect": "Verify completed cases and rebuild the report",
         "status": "Show checkpointed progress without interrupting a run",
-        "worker": "Execute a batch assigned by the LSF coordinator",
     }
     for name, help_text in descriptions.items():
         cmd = sub.add_parser(name, help=help_text)
@@ -26,14 +25,7 @@ def parse_args(argv=None):
         if name == "prepare":
             cmd.add_argument("--source", type=Path, help="Use a local tracker checkout")
         if name == "run":
-            cmd.add_argument("--workers", type=int, help="Maximum concurrent workers or LSF jobs")
-            cmd.add_argument("--executor", choices=["local", "lsf"], default="local")
-            cmd.add_argument("--bsub", default="bsub")
-            cmd.add_argument("--lsf-queue")
-            cmd.add_argument("--lsf-project")
-            cmd.add_argument("--lsf-memory-unit", choices=["KB", "MB", "GB"], default="MB")
-        if name == "worker":
-            cmd.add_argument("--batch", required=True, type=Path)
+            cmd.add_argument("--workers", type=int, help="Maximum concurrent local workers")
     options = parser.parse_args(argv)
     if getattr(options, "workers", None) is not None and options.workers < 1:
         parser.error("--workers must be positive")
@@ -47,10 +39,6 @@ def main(argv=None):
     options = parse_args(argv)
     output = options.output.resolve()
     try:
-        if options.command == "worker":
-            from .lsf import worker
-            worker(output, options.batch)
-            return 0
         if options.command == "status":
             plan = read_json(output / "plan.json")
             rows, issues = sweep.canonical_rows(output, plan)
@@ -72,7 +60,7 @@ def main(argv=None):
                 if not (output / "prepared.json").exists():
                     raise ValueError("Run prepare first to verify source identities and screen targets")
                 try:
-                    return 0 if sweep.run(output, options) else 1
+                    return 0 if sweep.run(output, options.workers) else 1
                 except RuntimeError:
                     if (output / "plan.json").exists():
                         sweep.collect(output)

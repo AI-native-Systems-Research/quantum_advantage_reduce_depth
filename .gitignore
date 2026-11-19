@@ -6,7 +6,8 @@ __pycache__/
 build/
 dist/
 *.py[cod]
-output/
+output*/
 .DS_Store
 
 design/
+

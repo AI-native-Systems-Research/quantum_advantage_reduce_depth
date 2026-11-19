@@ -218,10 +218,3 @@ def compile_trial(circuit, backend, seed, arm):
     rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return compiled, {**metrics, "seconds": seconds,
                       "peak_rss_mib": rss / (1024**2 if sys.platform == "darwin" else 1024)}
-
-
-def verify_winner(compiled, source, backend, row):
-    """Independently recompute legality, depths, layouts and measurement wiring after QPY load."""
-    for field, actual in _metrics(compiled, source, backend).items():
-        if actual != row[field]:
-            raise ValueError(f"Winner {field} mismatch: recorded {row[field]!r}, recomputed {actual!r}")

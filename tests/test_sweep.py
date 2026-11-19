@@ -1,11 +1,10 @@
 import os
 from pathlib import Path
-from types import SimpleNamespace
 import time
 
 import pytest
 
-from quantum_advantage_reduce_depth import compiler, report, sweep
+from quantum_advantage_reduce_depth import compiler, sweep
 from quantum_advantage_reduce_depth.storage import sha256, write_json
 
 
@@ -60,7 +59,7 @@ def test_worker_provenance_fails_before_compile(tmp_path, study, mismatch):
     rows, issues = sweep.canonical_rows(tmp_path, plan)
     assert not issues and len(rows) == 1
     assert rows[0]["status"] == "error" and "differs from its plan" in rows[0]["error"]
-    assert rows[0]["seconds"] == 0 and "artifact" not in rows[0]
+    assert rows[0]["seconds"] == 0
 
 
 def test_retry_preserves_identity_and_captures_compile_cost(tmp_path, study, monkeypatch):
@@ -85,20 +84,14 @@ def test_retry_preserves_identity_and_captures_compile_cost(tmp_path, study, mon
     failed, = rows[0]["previous_attempts"]
     assert failed["task_id"] == rows[0]["task_id"] and failed["seconds"] > 0
 
-    # Keep this worker/collector integration test independent of plotting.
-    monkeypatch.setattr(report, "write_report",
-                        lambda output, plan, rows, verified: report.analyze(plan, rows, verified)[0])
     assert sweep.collect(tmp_path)
-    best = tmp_path / "best" / case["case_id"]
-    assert (best / "decay.qpy").read_bytes() == (best / "overall.qpy").read_bytes()
-    assert (best / "weighted.qpy").exists()
+    assert not list((tmp_path / "_work").rglob("*.qpy"))
 
     duplicate = {**rows[0], "attempt": 3}
     write_json(sweep.task_dir(tmp_path, tasks[0]) / "attempt-0003.json", duplicate)
     _, issues = sweep.canonical_rows(tmp_path, plan)
     assert "Duplicate trial" in issues[case["case_id"]][0]
     assert not sweep.collect(tmp_path)
-    assert not list(best.glob("*.qpy"))
 
 
 def _die_once(output, run_id, case, tasks):
@@ -143,26 +136,15 @@ def test_hard_worker_death_restarts_pool_from_checkpoints(tmp_path, monkeypatch)
     plan = dict(run_id="pool-recovery", cases=[case], tasks=tasks)
     monkeypatch.setattr(sweep, "execute_batch", _die_once)
     rows = sweep.run_phase(tmp_path, plan, seeds, {"workers": 1, "trials_per_shard": 1},
-                           SimpleNamespace(executor="local"), "test", [time.monotonic() + 60])
+                           "test", [time.monotonic() + 60])
     assert (tmp_path / "first-worker-died").exists()
     assert [row["task_id"] for row in rows] == [task["task_id"] for task in tasks]
     assert all(row["attempt"] == 1 and row["status"] == "ok" for row in rows)
 
 
-def test_recover_damaged_winner_without_spending_a_trial(tmp_path, study):
+def test_collect_detects_seed_zero_stock_depth_mismatch(tmp_path, study):
     plan, case = study
-    task = plan["tasks"][0]
-    sweep.execute_batch(tmp_path, plan["run_id"], case, [task])
-    rows, _ = sweep.canonical_rows(tmp_path, plan)
-    row, = rows
-    candidate = tmp_path / row["artifact"]
-    candidate.write_bytes(b"damaged candidate")
-    source = sweep.load_snapshot(tmp_path / case["snapshot"], case["sha256"])
-    backend = sweep.backend_for(case["target"])
-    with pytest.raises(ValueError, match="damaged"):
-        sweep.verified_candidate(tmp_path, backend, source, row, repair=False)
-    recovered = sweep.verified_candidate(tmp_path, backend, source, row, repair=True)
-    assert recovered.name == "recovered.qpy"
-    assert sweep.verified_candidate(tmp_path, backend, source, row, repair=False) == recovered
-    assert candidate.read_bytes() == b"damaged candidate"
-    assert sweep.canonical_rows(tmp_path, plan) == (rows, {})
+    sweep.execute_batch(tmp_path, plan["run_id"], case, plan["tasks"])
+    case["stock"]["d2"] += 1
+    write_json(tmp_path / "plan.json", plan)
+    assert not sweep.collect(tmp_path)

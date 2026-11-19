@@ -1,9 +1,9 @@
-"""Run a fixed paired matrix, checkpoint each attempt, and verify the winners."""
+"""Run a fixed paired matrix locally and collect its checkpointed measurements."""
 
 from __future__ import annotations
 
 from collections import Counter
-from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, ThreadPoolExecutor, wait
+from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from concurrent.futures.process import BrokenProcessPool
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -13,12 +13,11 @@ import math
 import multiprocessing
 import os
 from pathlib import Path
-import shutil
 import time
 import uuid
 
 from . import compiler
-from .storage import atomic_write, read_json, sha256, write_json
+from .storage import read_json, sha256, write_json
 
 ARMS = ("decay", "weighted")
 SEEDS = list(range(50))
@@ -146,10 +145,6 @@ def verified_worker_backend(output, run_id, name):
     return backend
 
 
-def rank(row):
-    return row["d2"], row["n2"], row["seed"]
-
-
 def recover_interrupted(directory, run_id, task, attempts):
     marker = directory / "in-progress.json"
     if not marker.exists():
@@ -172,10 +167,7 @@ def recover_interrupted(directory, run_id, task, attempts):
 
 def execute_batch(output, run_id, case, tasks):
     """A batch may be replayed. Only uncompleted task identities get new attempts."""
-    from qiskit import qpy
-
     output = Path(output)
-    minima = {}
     for task in tasks:
         directory = task_dir(output, task)
         with lock(directory / ".lock"):
@@ -191,23 +183,16 @@ def execute_batch(output, run_id, case, tasks):
             try:
                 backend = verified_worker_backend(output, run_id, case["target"])
                 source = load_snapshot(output / case["snapshot"], case["sha256"])
-                compiled, metrics = compiler.compile_trial(source, backend, task["seed"], arm)
+                _, metrics = compiler.compile_trial(source, backend, task["seed"], arm)
                 row.update(metrics)
                 if arm == "decay" and task["seed"] == 0 and row["d2"] != case["stock"]["d2"]:
                     raise ValueError(f"Seed 0 D2 {row['d2']} differs from stock {case['stock']['d2']}")
-                if arm not in minima or rank(row) < minima[arm]:
-                    artifact = directory / f"candidate-{ordinal:04}.qpy"
-                    atomic_write(artifact, lambda stream: qpy.dump(compiled, stream), binary=True)
-                    row.update(artifact=artifact.relative_to(output).as_posix(),
-                               artifact_sha256=sha256(artifact))
                 row["status"] = "ok"
             except Exception as exc:
                 row.setdefault("seconds", getattr(exc, "seconds", 0.0))
                 row.update(status="error", error=f"{type(exc).__name__}: {exc}")
             write_json(directory / f"attempt-{ordinal:04}.json", row)
             marker.unlink()
-            if row["status"] == "ok" and "artifact" in row:
-                minima[arm] = rank(row)
 
 
 def canonical_rows(output, plan, tasks=None):
@@ -262,31 +247,19 @@ def size_from_pilot(rows, worker_limit):
         "pilot_trials": len(rows), "peak_worker_rss_mib": peak, "max_compile_seconds": slowest,
         "pilot_compile_seconds": sum(row["seconds"] for row in rows),
         "host_memory_mib": memory, "workers": workers, "trials_per_shard": size,
-        "lsf_memory_mib": worker_memory, "lsf_wall_minutes": max(5, math.ceil(2*slowest*size/60)+2),
     }
 
 
-def dispatch(output, plan, batches, settings, options, phase, next_check):
+def dispatch(output, plan, batches, settings, phase, next_check):
     """Feed a bounded pool. The heartbeat runs even if no batch has finished."""
-    from .lsf import submit
-
-    if options.executor == "local":
-        pool = ProcessPoolExecutor(max_workers=settings["workers"],
-                                   initializer=compiler.configure_threads,
-                                   mp_context=multiprocessing.get_context("spawn"))
-    else:
-        pool = ThreadPoolExecutor(max_workers=settings["workers"])
     errors = []
-    with pool:
+    with ProcessPoolExecutor(max_workers=settings["workers"], initializer=compiler.configure_threads,
+                             mp_context=multiprocessing.get_context("spawn")) as pool:
         futures = set()
-        batch_iter = iter(enumerate(batches))
+        batch_iter = iter(batches)
         def fill():
-            for index, (case, tasks) in batch_iter:
-                if options.executor == "local":
-                    job = pool.submit(execute_batch, output, plan["run_id"], case, tasks)
-                else:
-                    job = pool.submit(submit, output, plan, case, tasks, phase, index, settings,
-                                      options)
+            for case, tasks in batch_iter:
+                job = pool.submit(execute_batch, output, plan["run_id"], case, tasks)
                 futures.add(job)
                 if len(futures) >= settings["workers"] * 2:
                     break
@@ -314,7 +287,7 @@ def dispatch(output, plan, batches, settings, options, phase, next_check):
     return errors
 
 
-def run_phase(output, plan, seeds, settings, options, phase, next_check):
+def run_phase(output, plan, seeds, settings, phase, next_check):
     phase_tasks = [t for t in plan["tasks"] if t["seed"] in seeds]
     for submission in range(2):
         rows, issues = canonical_rows(output, plan, phase_tasks)
@@ -328,7 +301,7 @@ def run_phase(output, plan, seeds, settings, options, phase, next_check):
             missing = [t for t in tasks_for(case, seeds) if t["task_id"] not in ok]
             size = settings["trials_per_shard"]
             batches.extend((case, missing[i:i+size]) for i in range(0, len(missing), size))
-        errors = dispatch(output, plan, batches, settings, options, phase, next_check)
+        errors = dispatch(output, plan, batches, settings, phase, next_check)
         if errors:
             print("Batch errors:", *errors, sep="\n", flush=True)
     rows, issues = canonical_rows(output, plan, phase_tasks)
@@ -338,23 +311,16 @@ def run_phase(output, plan, seeds, settings, options, phase, next_check):
     return rows
 
 
-def run(output, options):
+def run(output, workers=None):
     plan = create_plan(output)
-    cap = options.workers or max(1, int((os.cpu_count() or 1)*0.8))
-    pilot = {"workers": min(4, cap), "trials_per_shard": 2,
-             "lsf_memory_mib": 2048, "lsf_wall_minutes": 10}
-    if options.executor == "lsf":
-        from .lsf import check_lsf
-        check_lsf(options)
+    cap = workers or max(1, int((os.cpu_count() or 1)*0.8))
+    pilot = {"workers": min(4, cap), "trials_per_shard": 2}
     next_check = [time.monotonic() + MONITOR_SECONDS]
-    plan.update(executor=options.executor, worker_limit=cap, pilot_resources=pilot)
-    if options.executor == "lsf":
-        plan["lsf"] = {"bsub": options.bsub, "queue": options.lsf_queue,
-                       "project": options.lsf_project, "memory_unit": options.lsf_memory_unit}
+    plan.update(executor="local", worker_limit=cap, pilot_resources=pilot)
     write_json(output / "plan.json", plan)
     monitor(output, plan, "start/resume")
     started = time.monotonic()
-    rows = run_phase(output, plan, PILOT_SEEDS, pilot, options, "pilot", next_check)
+    rows = run_phase(output, plan, PILOT_SEEDS, pilot, "pilot", next_check)
     settings = size_from_pilot(rows, cap)
     if "pilot" not in plan:
         settings["elapsed_seconds"] = time.monotonic() - started
@@ -364,52 +330,13 @@ def run(output, options):
     write_json(output / "plan.json", plan)
     monitor(output, plan, "pilot verified")
     print(f"Full matrix resources: {settings}", flush=True)
-    run_phase(output, plan, SEEDS[3:], settings, options, "matrix", next_check)
-    complete = collect(output, repair=True)
+    run_phase(output, plan, SEEDS[3:], settings, "matrix", next_check)
+    complete = collect(output)
     monitor(output, plan, "complete" if complete else "collection incomplete")
     return complete
 
 
-def copy_atomic(source, destination):
-    def copy(stream):
-        with Path(source).open("rb") as reader:
-            shutil.copyfileobj(reader, stream)
-    atomic_write(destination, copy, binary=True)
-
-
-def verified_candidate(output, backend, source, row, repair):
-    from qiskit import qpy
-
-    directory = task_dir(output, row)
-    path = output / row["artifact"]
-    if path.resolve().parent != directory.resolve():
-        raise ValueError("Candidate QPY outside the matching task directory")
-    recovered = directory / "recovered.qpy"
-    recovery = directory / "recovery.json"
-    for candidate, digest in [(path, row["artifact_sha256"])] + (
-        [(recovered, read_json(recovery)["sha256"])] if recovery.exists() else []
-    ):
-        if candidate.is_file() and sha256(candidate) == digest:
-            with candidate.open("rb") as stream:
-                compiled, = qpy.load(stream)
-            compiler.verify_winner(compiled, source, backend, row)
-            return candidate
-    if not repair:
-        raise ValueError(f"Missing or damaged winning artifact for {row['task_id']}")
-    # A replay restores an artifact. Its measurements never enter the trial budget.
-    compiled, metrics = compiler.compile_trial(source, backend, row["seed"], row["arm"])
-    compiler.verify_winner(compiled, source, backend, row)
-    atomic_write(recovered, lambda stream: qpy.dump(compiled, stream), binary=True)
-    with recovered.open("rb") as stream:
-        restored, = qpy.load(stream)
-    compiler.verify_winner(restored, source, backend, row)
-    write_json(recovery, {"time": now(), "task_id": row["task_id"], "run_id": row["run_id"],
-                          "original_sha256": row["artifact_sha256"], "sha256": sha256(recovered),
-                          "replay_seconds": metrics["seconds"]})
-    return recovered
-
-
-def collect(output, repair=False):
+def collect(output):
     from .report import write_report
 
     plan = read_json(output / "plan.json")
@@ -420,37 +347,13 @@ def collect(output, repair=False):
         case_id = case["case_id"]
         problems = issues.get(case_id, [])
         subset = [r for r in rows if r["case_id"] == case_id]
-        files = {}
         expected = {(arm, seed) for arm in ARMS for seed in plan["seeds"]}
         actual = {(r["arm"], r["seed"]) for r in subset if r["status"] == "ok"}
         if actual != expected or len(subset) != len(expected):
             problems.append(f"{len(actual)}/{len(expected)} distinct trials succeeded")
         if not problems:
-            try:
-                stock_row = next(r for r in subset if r["arm"] == "decay" and r["seed"] == 0)
-                if stock_row["d2"] != case["stock"]["d2"]:
-                    raise ValueError("Seed 0 decay D2 differs from stock")
-                source = load_snapshot(output / case["snapshot"], case["sha256"])
-                backend = backend_for(case["target"])
-                winners = {}
-                candidates = {}
-                for arm in ARMS:
-                    row = min((r for r in subset if r["arm"] == arm), key=rank)
-                    candidates[arm] = verified_candidate(output, backend, source, row, repair)
-                    winners[arm] = row
-                # ARMS order gives decay the exact D2/N2 tie, independent of seed.
-                winner_arm = min(ARMS, key=lambda a: (winners[a]["d2"], winners[a]["n2"]))
-                for name, candidate in {**candidates, "overall": candidates[winner_arm]}.items():
-                    relative = f"best/{case_id}/{name}.qpy"
-                    copy_atomic(candidate, output / relative)
-                    files[name] = relative
-            except Exception as exc:
-                # QPY parsing also raises Qiskit-specific exceptions. Keep other
-                # independently verified cases publishable if one file is bad.
-                problems.append(f"Winner validation failed: {type(exc).__name__}: {exc}")
-        if problems:
-            for name in (*ARMS, "overall"):
-                (output / "best" / case_id / f"{name}.qpy").unlink(missing_ok=True)
-            files.clear()
-        verified[case_id] = {"complete": not problems, "issues": problems, "artifacts": files}
+            stock = next(r for r in subset if r["arm"] == "decay" and r["seed"] == 0)
+            if stock["d2"] != case["stock"]["d2"]:
+                problems.append("Seed 0 decay D2 differs from stock")
+        verified[case_id] = {"complete": not problems, "issues": problems}
     return write_report(output, plan, rows, verified)["complete"]
